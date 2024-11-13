@@ -123,7 +123,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
         <div class="form-group">
             <label>e-mail</label>
-            <input type="text" class="form-control" placeholder="Enter your email" name="email"autocomplete="off">
+            <input type="email" class="form-control" placeholder="Enter your email" name="email"autocomplete="off">
         </div>
         <div class="form-group">
             <label>password</label>
