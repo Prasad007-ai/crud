@@ -147,10 +147,10 @@ if(isset($_POST['submit'])){
 
 
 <?php
-session_start();
+session_start(); // Start the session at the very beginning
 include 'connect.php';
 
-// Enable error reporting for debugging
+// Enable error reporting for debugging (optional)
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -184,34 +184,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !isset($_POST['emailCheck'])) {
     } else {
         $sql = "INSERT INTO crud (name, email, password, category) VALUES (?, ?, ?, ?)";
         $stmt = $con->prepare($sql);
+// Assuming your registration and $stmt->execute code
+if ($stmt->execute([$name, $email, $password, $category])) {
+    // Set session message for successful registration
+    $_SESSION['message'] = 'User added successfully!';
+    $_SESSION['message_type'] = 'success';  // Optional: to differentiate message types
 
-        if ($stmt->execute([$name, $email, $password, $category])) {
-            // Set session message for successful registration
-            $_SESSION['message'] = 'User added successfully!';
-            $_SESSION['message_type'] = 'success';  // Optional: To differentiate types (success, error, etc.)
+    // Redirect to display.php after user registration
 
-            // Debugging: Check if session variables are set
-            // echo "Session message set: " . $_SESSION['message'];  // This should show in the browser for debugging
-
-            // Redirect to display.php after user registration
-            // header('Location: display.php');
-            // exit;
-        } else {
+    exit();  // Make sure nothing else is executed after redirect
+} else {
             echo "<p style='color: red;'>Error: Could not register user.</p>";
-            
         }
     }
-    exit;
 }
 ?>
 
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -220,88 +210,62 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !isset($_POST['emailCheck'])) {
     <link href="user.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-
 <body>
 
-    <div class="container my-5">
-        <!-- Display the session message -->
-        <?php
-        if (isset($_SESSION['message'])) {
-            // Get the message and its type (optional)
-            $message = $_SESSION['message'];
-            $message_type = isset($_SESSION['message_type']) ? $_SESSION['message_type'] : 'info';  // Default to 'info'
-
-            // Display the message
-            echo "<div class='$message_type' style='color: green;'>$message</div>";
-
-            // Unset the session variables after displaying the message
-            unset($_SESSION['message']);
-            unset($_SESSION['message_type']);
-        }
-        ?>
-
-        <div class="container my-5">
-            <form id="registerForm" method="post">
-                <div class="form-group">
-                    <label>Name</label>
-                    <input type="text" class="form-control" placeholder="Enter your name" name="name" autocomplete="off" required>
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" class="form-control" placeholder="Enter your email" name="email" autocomplete="off" id="email" required>
-                    <span id="emailError" style="color: red;"></span>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" class="form-control" placeholder="Enter your password" name="password" autocomplete="off" required>
-                </div>
-                <div class="form-group">
-                    <label>Category</label>
-                    <input type="text" class="form-control" placeholder="Enter your category" name="category" autocomplete="off" required>
-                </div>
-                <button type="submit" class="btn btn-primary my-4">Submit</button>
-            </form>
-            <div id="response"></div>
+<div class="container my-5">
+    <form id="registerForm" method="post">
+        <div class="form-group">
+            <label>Name</label>
+            <input type="text" class="form-control" placeholder="Enter your name" name="name" autocomplete="off" required>
         </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" class="form-control" placeholder="Enter your email" name="email" autocomplete="off" id="email" required>
+            <span id="emailError" style="color: red;"></span>
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" class="form-control" placeholder="Enter your password" name="password" autocomplete="off" required>
+        </div>
+        <div class="form-group">
+            <label>Category</label>
+            <input type="text" class="form-control" placeholder="Enter your category" name="category" autocomplete="off" required>
+        </div>
+        <button type="submit" class="btn btn-primary my-4">Submit</button>
+    </form>
+    <div id="response"></div>
+</div>
 
+<script>
+    // Real-time email validation
+    $('#email').on('blur', function() {
+        var email = $(this).val();
+        $.ajax({
+            url: 'user.php',  // Same file for simplicity
+            type: 'POST',
+            data: { emailCheck: 'true', email: email },
+            success: function(response) {
+                $('#emailError').html(response);
+            }
+        });
+    });
 
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script>
-            // Real-time email validation
-            $('#email').on('blur', function() {
-                var email = $(this).val();
-                $.ajax({
-                    url: 'user.php',
-                    type: 'POST',
-                    data: {
-                        emailCheck: 'true',
-                        email: email
-                    },
-                    success: function(response) {
-                        $('#emailError').html(response);
-                    }
-                });
-            });
-
-            // Submit form with AJAX
-            $('#registerForm').on('submit', function(e) {
-                e.preventDefault();
-                $.ajax({
-                    url: 'user.php',
-                    type: 'POST',
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        $('#response').html(response);
-                        if (response.includes("Registration successful!")) {
-
-                            window.location.href = 'display.php'; // Redirect on success
-                        }
-                    }
-                });
-            });
-        </script>
-
+    // Submit form with AJAX
+    $('#registerForm').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: 'user.php',
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+                $('#response').html(response);
+                if (response.includes("Registration successful!")) {
+                   window.location.href = 'display.php';  // Redirect after success
+                }
+            }
+        });
+    });
+</script>
 
 </body>
-
 </html>
