@@ -45,7 +45,7 @@
 //     echo "<p style='color: red;'>Invalid request.</p>";
 // }
 ?>
-  <?php
+ <?php
 include 'connect.php';
 
 header('Content-Type: application/json');

@@ -1,42 +1,42 @@
-<!-- 
-session_start();
-include 'connect.php';
-$id=$_GET['updateid'];
-$sql= "select*from `crud`where id=$id";
-$result= (mysqli_query($con,$sql));
-$row = mysqli_fetch_assoc($result);
-$name = $row['name'];
-$email = $row['email'];
-$password = $row['password'];
-$category = $row['category'];
-if(isset($_POST['submit'])){
-    $name=$_POST['name'];
-    $email=$_POST['email'];
-    $password=$_POST['password'];
-    $category=$_POST['category'];
+<?php
+// session_start();
+// include 'connect.php';
+// $id=$_GET['updateid'];
+// $sql= "select*from `crud`where id=$id";
+// $result= (mysqli_query($con,$sql));
+// $row = mysqli_fetch_assoc($result);
+// $name = $row['name'];
+// $email = $row['email'];
+// $password = $row['password'];
+// $category = $row['category'];
+// if(isset($_POST['submit'])){
+//     $name=$_POST['name'];
+//     $email=$_POST['email'];
+//     $password=$_POST['password'];
+//     $category=$_POST['category'];
 
 
-    $sql="update`crud`set id='$id',Name='$name',email='$email',password='$password',category='$category'
-    where id=$id";
+//     $sql="update`crud`set id='$id',Name='$name',email='$email',password='$password',category='$category'
+//     where id=$id";
    
 
-    $result=mysqli_query($con,$sql);
-    if($result){
-        //echo "update successfully";
-        header('location:display.php');
-    }else{
-        die(mysqli_error($con));
-    }
-}
+//     $result=mysqli_query($con,$sql);
+//     if($result){
+//         //echo "update successfully";
+//         header('location:display.php');
+//     }else{
+//         die(mysqli_error($con));
+//     }
+// }
+
+?>
 
 
 
 
 
 
-
-
-<!doctype html>
+<!-- <!doctype html>
 <html lang="en">
 
 <head>
@@ -56,20 +56,20 @@ if(isset($_POST['submit'])){
         <form method="post">
             <div class="form-group">
                 <label>Name</label>
-                <input type="text" class="form-control" placeholder="Enter your name" name="name"autocomplete="off"value=<?php echo $name; ?> >
+                <input type="text" class="form-control" placeholder="Enter your name" name="name"autocomplete="off" >
             </div>
 
             <div class="form-group">
                 <label>email</label>
-                <input type="email" class="form-control" placeholder="Enter your email" name="email"autocomplete="off"value=<?php echo $email; ?>>
+                <input type="email" class="form-control" placeholder="Enter your email" name="email"autocomplete="off">
             </div>
             <div class="form-group">
                 <label>password</label>
-                <input type="password" class="form-control" placeholder="Enter your password" name="password"autocomplete="off"value=<?php echo $password; ?>>
+                <input type="password" class="form-control" placeholder="Enter your password" name="password"autocomplete="off">
             </div>
             <div class="form-group"> 
                 <label>category</label>
-                <input type="text" class="form-control" placeholder="Enter your email" name="category"autocomplete="off"value=<?php echo $category; ?>>
+                <input type="text" class="form-control" placeholder="Enter your email" name="category"autocomplete="off">
             </div>
              <button type="submit"  class="btn btn-primary"name="submit">update</button>
         </form>
@@ -77,151 +77,213 @@ if(isset($_POST['submit'])){
 
 </body>
 
-</html> -->
+</html> --> 
+
+<?php
+// session_start();
+// include 'connect.php'; // Ensure this file contains the correct connection logic
+
+// // Check if `updateid` is passed in the URL
+// if (isset($_GET['updateid']) && is_numeric($_GET['updateid'])) {
+//     $id = (int)$_GET['updateid'];
+
+//     // Fetch data for the given ID
+//     $sql = "SELECT * FROM crud WHERE id = $id";
+//     $result = mysqli_query($con, $sql);
+
+//     if ($result && mysqli_num_rows($result) > 0) {
+//         // Fetch record
+//         $row = mysqli_fetch_assoc($result);
+//         $name = $row['name'];
+//         $email = $row['email'];
+//         $password = $row['password'];
+//         $category = $row['category'];
+//     } else {
+//         die("Record not found.");
+//     }
+// } else {
+//     die("Invalid ID.");
+// }
+
+// // Handle form submission for updating the record
+// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+//     // Fetch and sanitize POST data
+//     $name = mysqli_real_escape_string($con, $_POST['name']);
+//     $email = mysqli_real_escape_string($con, $_POST['email']);
+//     $password = mysqli_real_escape_string($con, $_POST['password']); // Assuming it's already hashed
+//     $category = mysqli_real_escape_string($con, $_POST['category']);
+
+//     // Check if email is duplicate (excluding the current record)
+//     $sqlEmailCheck = "SELECT id FROM crud WHERE email = '$email' AND id != $id";
+//     $resultEmailCheck = mysqli_query($con, $sqlEmailCheck);
+
+//     if ($resultEmailCheck && mysqli_num_rows($resultEmailCheck) > 0) {
+//         echo "<script>alert('Email is already in use by another user.');</script>";
+//     } else {
+//         // Update the record
+//         $sqlUpdate = "UPDATE crud SET 
+//                         name = '$name', 
+//                         email = '$email', 
+//                         password = '$password', 
+//                         category = '$category' 
+//                       WHERE id = $id";
+//         $resultUpdate = mysqli_query($con, $sqlUpdate);
+
+//         if ($resultUpdate) {
+//             echo "<script>alert('Record updated successfully!'); window.location.href = 'display.php';</script>";
+//         } else {
+//             echo "<script>alert('Failed to update the record. Please try again.');</script>";
+//         }
+//     }
+// }
+?>
+
 
 <?php
 session_start();
-include 'connect.php';
+include 'connect.php'; // Ensure this file contains the correct PDO connection
 
-// Check if ID is provided and valid
-if (isset($_GET['updateid'])) {
-    $id = $_GET['updateid'];
+// Check if `updateid` is passed in the URL
+if (isset($_GET['updateid']) && is_numeric($_GET['updateid'])) {
+    $id = (int)$_GET['updateid'];
 
-    // Prepare the select statement
+    // Fetch data for the given ID using PDO
     $sql = "SELECT * FROM crud WHERE id = :id";
     $stmt = $con->prepare($sql);
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    $stmt->execute();
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->execute(['id' => $id]);
+    $row = $stmt->fetch();
 
-    // Check if the record exists
     if ($row) {
         $name = $row['name'];
         $email = $row['email'];
         $password = $row['password'];
         $category = $row['category'];
     } else {
-        echo json_encode(["status" => "error", "message" => "Record not found."]);
-        exit;
+        die("Record not found.");
     }
 } else {
-    echo json_encode(["status" => "error", "message" => "Invalid ID."]);
-    exit;
+    die("Invalid ID.");
 }
 
-// Handle AJAX update request
-if (isset($_POST['ajax']) && $_POST['ajax'] == true) {
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $category = $_POST['category'];
+// Handle form submission for updating the record
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Fetch and sanitize POST data
+    $name = htmlspecialchars($_POST['name']);
+    $email = htmlspecialchars($_POST['email']);
+    $password = htmlspecialchars($_POST['password']); // Assuming it's already hashed
+    $category = htmlspecialchars($_POST['category']);
 
-    // Check if email already exists for another user
-    $emailCheckSql = "SELECT id FROM crud WHERE email = :email AND id != :id";
-    $emailCheckStmt = $con->prepare($emailCheckSql);
-    $emailCheckStmt->bindParam(':email', $email, PDO::PARAM_STR);
-    $emailCheckStmt->bindParam(':id', $id, PDO::PARAM_INT);
-    $emailCheckStmt->execute();
-
-    if ($emailCheckStmt->rowCount() > 0) {
-        // Email exists for another user
-        echo json_encode(["status" => "error", "message" => "This email is already in use."]);
-        exit;
-    }
-
-    // Update statement with placeholders
-    $sql = "UPDATE crud SET name = :name, email = :email, password = :password, category = :category WHERE id = :id";
-    $stmt = $con->prepare($sql);
-
-    // Bind parameters
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    $stmt->bindParam(':name', $name, PDO::PARAM_STR);
-    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-    $stmt->bindParam(':password', $password, PDO::PARAM_STR);
-    $stmt->bindParam(':category', $category, PDO::PARAM_STR);
-
-    // Execute the query and send response
-    if ($stmt->execute()) {
-        echo json_encode(["status" => "success", "message" => "Record updated successfully!"]);
-    } else {
-        echo json_encode(["status" => "error", "message" => "Error updating record."]);
-
-    }
-    exit; // End script to prevent loading HTML
+    // Check if email is duplicate (excluding the current record)
+    $sqlEmailCheck = "SELECT id FROM crud WHERE email = :email AND id != :id";
+    $stmtEmailCheck = $con->prepare($sqlEmailCheck);
+    $stmtEmailCheck->execute(['email' => $email, 'id' => $id]);
     
+    if ($stmtEmailCheck->rowCount() > 0) {
+        echo "<script>alert('Email is already in use by another user.');</script>";
+    } else {
+        // Update the record using PDO
+        $sqlUpdate = "UPDATE crud SET 
+                        name = :name, 
+                        email = :email, 
+                        password = :password, 
+                        category = :category 
+                      WHERE id = :id";
+        $stmtUpdate = $con->prepare($sqlUpdate);
+        $resultUpdate = $stmtUpdate->execute([
+            'name' => $name,
+            'email' => $email,
+            'password' => $password,
+            'category' => $category,
+            'id' => $id
+        ]);
+
+        if ($resultUpdate) {
+            // Set success message in session
+            $_SESSION['success_message'] = 'Record updated successfully!';
+            // Redirect to display.php to show the success message
+            header("Location: display.php");  // Ensure you're redirecting to display.php, not passing the ID
+            exit();
+        } else {
+            echo "<script>alert('Failed to update the record. Please try again.');</script>";
+        }
+        
+    }
 }
 ?>
 
 <!doctype html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>Update Form</title>
+    <link href="update.css" rel="stylesheet">
+    <title>Update Record</title>
 </head>
-
 <body>
     <div class="container my-5">
-        <form id="updateForm">
-            <div class="form-group mb-3">
+        <!-- Display success message if session is set -->
+        <?php
+        if (isset($_SESSION['success_message'])) {
+            echo '<div class="alert alert-success">' . $_SESSION['success_message'] . '</div>';
+            unset($_SESSION['success_message']); // Unset to avoid showing again
+        }
+        ?>
+
+        <form method="post">
+            <div class="form-group">
                 <label>Name</label>
-                <input type="text" class="form-control" placeholder="Enter your name" name="name" autocomplete="off" value="<?php echo htmlspecialchars($name); ?>" required>
+                <input type="text" class="form-control" name="name" placeholder="Enter your name" autocomplete="off" value="<?php echo htmlspecialchars($name); ?>" required>
             </div>
-
-            <div class="form-group mb-3">
+            <div class="form-group">
                 <label>Email</label>
-                <input type="email" class="form-control" placeholder="Enter your email" name="email" autocomplete="off" value="<?php echo htmlspecialchars($email); ?>" required>
+                <input type="email" class="form-control" name="email" placeholder="Enter your email" autocomplete="off" value="<?php echo htmlspecialchars($email); ?>" required>
             </div>
-
-            <div class="form-group mb-3">
+            <div class="form-group">
                 <label>Password</label>
-                <input type="password" class="form-control" placeholder="Enter your password" name="password" autocomplete="off" value="<?php echo htmlspecialchars($password); ?>" required>
+                <input type="password" class="form-control" name="password" placeholder="Enter your password" autocomplete="off" value="<?php echo htmlspecialchars($password); ?>" required>
             </div>
-
-            <div class="form-group mb-3">
+            <div class="form-group">
                 <label>Category</label>
-                <input type="text" class="form-control" placeholder="Enter your category" name="category" autocomplete="off" value="<?php echo htmlspecialchars($category); ?>" required>
+                <input type="text" class="form-control" name="category" placeholder="Enter your category" autocomplete="off" value="<?php echo htmlspecialchars($category); ?>" required>
             </div>
-
-            <button type="submit" class="btn btn-primary">Update</button>
-            <div id="message" class="mt-3"></div>
+            <button type="submit" class="btn btn-primary mt-3">Update</button>
         </form>
     </div>
+
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
 $(document).ready(function() {
     $("#updateForm").on("submit", function(e) {
-        e.preventDefault(); // Prevent form from submitting normally
+        e.preventDefault(); // Prevent default form submission
 
         // Serialize form data
-        var formData = $(this).serialize() + '&ajax=true'; // Include ajax flag
+        const formData = $(this).serialize() + "&ajax=true";
 
-        // Send AJAX request
+        // Send AJAX POST request
         $.ajax({
-            url: "", // The current file will handle the AJAX request
+            url: 'update.php', // Same PHP file
             type: "POST",
             data: formData,
             dataType: "json",
             success: function(response) {
-                console.log("AJAX Success Response: ", response); // Log response to ensure it is correct
                 if (response.status === "success") {
                     $("#message").html('<div class="alert alert-success">' + response.message + '</div>');
                 } else {
                     $("#message").html('<div class="alert alert-danger">' + response.message + '</div>');
                 }
             },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log("AJAX Error Response: ", jqXHR.responseText);
-                console.log("Error Status: ", textStatus);
-                console.log("Error Thrown: ", errorThrown);
-                $("#message").html('<div class="alert alert-danger">An error occurred while updating the record.</div>');
+            error: function(jqXHR) {
+                $("#message").html('<div class="alert alert-danger">An unknown error occurred.</div>');
+                console.error("Error response:", jqXHR.responseText);
             }
         });
     });
 });
+
+
+
     </script>
 </body>
 
