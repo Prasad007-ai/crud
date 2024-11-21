@@ -201,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Set success message in session
             $_SESSION['success_message'] = 'Record updated successfully!';
             // Redirect to display.php to show the success message
-            header("Location: display.php");  // Ensure you're redirecting to display.php, not passing the ID
+            header("Location: display.php");  // Ensure you're redirecting to display.php
             exit();
         } else {
             echo "<script>alert('Failed to update the record. Please try again.');</script>";
@@ -210,6 +210,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
+
 
 <!doctype html>
 <html lang="en">

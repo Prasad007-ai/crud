@@ -1,117 +1,16 @@
 <?php
-// session_start();
-// include 'connect.php';
-
-// if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-//     header('Location: loginn.php');
-//     exit;
-// }
-// $sql = "SELECT * FROM crud";
-// // $result = mysqli_query($con, $sql);
-// $stmt = $con->prepare($sql);
-
-
-?>
-
-
-
-
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>crud operation</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-
-<body>
-    <div class="container">
-        <button class="btn btn-primary my-5"> <a href="user.php" class="text-light">Add user</a>
-        </button>
-        <form method="post" action="loginn.php" >
-        <button style="float: right; margin: -87px;"class="btn btn-danger ">
-            <a href="logout.php" class="text-light">Logout</a>  
-        </button>
-        <table class="table">
-            <thead>     
-                <tr>
-                    <th scope="col">sl no</th>
-                    <th scope="col">Name</th>
-                    <th scope="col"> email</th>
-                    <th scope="col"> password</th>
-                    <th scope="col"> category</th>
-                    <th scope="col">operation</th>    
-                </tr>
-            </thead>
-            <tbody>
-
-                
-
-            <?php
-            // $sql = "select * from `crud`";
-            // // $result = mysqli_query($con, $sql);
-            // $stmt = $con->prepare($sql);
-            // if (!$stmt) {
-            //     // If prepare failed, output the error info
-            //     echo "Error in preparing the statement: " . implode(":", $con->errorInfo());
-            //     exit;
-            // }
-
-            // if ($result) { 
-            //     while ($row = mysqli_fetch_assoc($result)) {
-            //         $id = $row['id'];
-            //         $name = $row['name'];
-            //         $email = $row['email'];
-            //         $password = $row['password'];
-            //         $category = $row['category'];
-
-            //         echo '<tr>
-            //     <th scope="row">' . $id . '</th>
-            //     <td>' . $name . '</td>
-            //     <td>' . $email . '</td>
-            //     <td>' . $password . '</td>
-            //     <td>' . $category . '</td>
-
-            //     <td>
-            //     <button class= "btn btn-primary"><a href="update.php?
-            //     updateid='.$id.'"
-            //     class="text-light">update</a></button>
-            //     <button class="btn btn-danger"><a href="delete.php?
-            //     delete_id='.$id.'"
-            //     class="text-light">delete</a></button>
-
-            //     </td>
-            // </tr>';
-            //     }
-            // }
-
-            ?>
-               
-
-</form>
-
-
-            </tbody>
-        </table>
-    </div>
-
-</body>
-
-</html> -->
-<?php
 session_start();
-include 'connect.php';
+include 'connect.php'; // Include your database connection
 
-// Check if the user is logged in
-if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    header('Location: loginn.php');
-    exit;
+// Check if there's a success message in session and display it
+if (isset($_SESSION['success_message'])) {
+    echo '<div class=" alert-success alert-dismissible fade show" role="alert" id="session-alert">' . $_SESSION['success_message'] . '
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>';
+    unset($_SESSION['success_message']); // Unset the message after displaying it
 }
 
-// Fetch records
+// Fetch data from the database
 $sql = "SELECT * FROM crud";
 $stmt = $con->prepare($sql);
 $stmt->execute();
@@ -127,42 +26,19 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <title>CRUD Operation</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="display.css" rel="stylesheet">
-    <style>
-        .alert {
-            display: none;
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            padding: 10px 20px;
-            max-width: 300px;
-            opacity: 1;
-            animation: fadeOut 6s forwards;
-            animation-delay: 2s;
-        }
-
-        @keyframes fadeOut {
-            from {
-                opacity: 1;
-            }
-
-            to {
-                opacity: 0;
-            }
-        }
-    </style>
 </head>
 
 <body>
     <div class="container my-5">
-        <!-- Display session message -->
-        <?php if (isset($_SESSION['message'])): ?>
-            <div class="alert alert-<?php echo $_SESSION['message_type']; ?>">
-                <?php echo $_SESSION['message']; ?>
-            </div>
-            <?php unset($_SESSION['message']); ?>
-        <?php endif; ?>
 
+        <!-- Display Session Message -->
+        <?php if (isset($_SESSION['message'])): ?>
+            <div class="alert alert-<?php echo $_SESSION['message_type']; ?> alert-dismissible fade show" role="alert" id="session-alert">
+                <?php echo $_SESSION['message']; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['message'], $_SESSION['message_type']); ?>
+        <?php endif; ?>
 
         <div class="d-flex justify-content-between align-items-center my-4">
             <button class="btn btn-primary">
@@ -212,59 +88,81 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 ?>
             </tbody>
         </table>
-    </div>
+    </div>  
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Show alerts dynamically
-            function showAlert(message, type) {
-                const alert = $('.alert');
-                alert.removeClass().addClass('alert alert-' + type);
-                alert.text(message);
-                alert.show();
+  <script>
+    $(document).ready(function () {
 
-                // Hide alert after 5 seconds
-                setTimeout(function() {
-                    alert.hide();
-                }, 5000);
-            }
+        // Automatically remove the session alert after 6 seconds if it exists
+        if ($('#session-alert').length) {
+            setTimeout(function () {
+                $('#session-alert').fadeOut(500, function () {
+                    $(this).remove();
+                });
+            }, 2000); // 2000 milliseconds = 2 seconds
+        }
 
-            // Handle delete button click
-            $('.delete-user-btn').click(function() {
-                const userId = $(this).data('id');
-                const row = $(this).closest('tr');
+        // Function to show alerts dynamically
+        function showAlert(message, type) {
+            // Create a new alert div dynamically
+            const alertDiv = $('<div class="alert alert-' + type + ' alert-dismissible fade show" role="alert">' + message +
+                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
+            
+            // Prepend the alert to the body for visibility
+            $('body').prepend(alertDiv);
 
-                if (confirm('Are you sure you want to delete this user?')) {
-                    $.ajax({
-                        url: 'delete.php',
-                        method: 'POST',
-                        data: {
-                            delete_id: userId
-                        },
-                        dataType: 'json',
-                        success: function(response) {
-                            if (response.success) {
-                                showAlert(response.message, 'success');
-                                row.fadeOut(400, function() {
-                                    $(this).remove();
-                                    // Update serial numbers
-                                    $('tbody tr').each(function(index) {
-                                        $(this).find('th:first').text(index + 1);
-                                    });
+            // Automatically remove the alert after 6 seconds
+            setTimeout(function () {
+                alertDiv.fadeOut(500, function () {
+                    $(this).remove();
+                });
+            }, 6000); // 6000 milliseconds = 6 seconds
+        }
+
+        // Handle delete button click using event delegation
+        $(document).on('click', '.delete-user-btn', function () {
+            const userId = $(this).data('id');
+            const row = $(this).closest('tr'); // Get the closest row of the clicked button
+
+            // Confirm if the user really wants to delete the user
+            if (confirm('Are you sure you want to delete this user?')) {
+                $.ajax({
+                    url: 'delete.php', // Endpoint to send the request
+                    method: 'POST',
+                    data: { delete_id: userId }, // Send the user ID to delete
+                    dataType: 'json', // Expect a JSON response
+                    success: function (response) {
+                        console.log('Server Response:', response);
+
+                        if (response.success) {
+                            // Show success alert
+                            showAlert(response.message, 'success');
+
+                            // Fade out and remove the row from the table
+                            row.fadeOut(400, function () {
+                                $(this).remove();
+
+                                // Recalculate and update row numbers after deletion
+                                $('tbody tr').each(function (index) {
+                                    $(this).find('th:first').text(index + 1); // Update index (serial number)
                                 });
-                            } else {
-                                showAlert(response.message, 'danger');
-                            }
-                        },
-                        error: function() {
-                            showAlert('An error occurred while deleting the user.', 'danger');
+                            });
+                        } else {
+                            // Show error alert
+                            showAlert(response.message, 'danger');
                         }
-                    });
-                }
-            });
-        });
-    </script>
-</body>
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX Error:', error);
+                        console.error('Response Text:', xhr.responseText);
 
-</html>
+                        // Show a generic error alert in case of AJAX failure
+                        showAlert('An error occurred while deleting the user.', 'danger');
+                    }
+                });
+            }
+        });
+
+    });
+</script>
