@@ -28,6 +28,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             $stmt = $con->prepare("INSERT INTO crud (name, email, password, category) VALUES (?, ?, ?, ?)");
             if ($stmt->execute([$name, $email, $password, $category])) {
+                // Set a session message for successful addition
+                $_SESSION['success_message'] = 'User added successfully!';
                 echo json_encode(['success' => true, 'redirect' => 'display.php']);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Failed to insert user into database.']);
@@ -39,6 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     exit;
 }
 ?>
+
 
 
 
