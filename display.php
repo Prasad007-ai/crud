@@ -1,13 +1,22 @@
 <?php
 session_start();
-include 'connect.php'; // Include your database connection
+include 'connect.php';
 
-// Check if there's a success message in session and display it
+// Display session message if it exists
 if (isset($_SESSION['success_message'])) {
-    echo '<div class=" alert-success alert-dismissible fade show" role="alert" id="session-alert">' . $_SESSION['success_message'] . '
+    echo '<div class=" alert-success alert-dismissible fade show" role="alert" id="session-alert">
+            ' . $_SESSION['success_message'] . '
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>';
-    unset($_SESSION['success_message']); // Unset the message after displaying it
+    unset($_SESSION['success_message']); // Unset after showing
+}
+
+if (isset($_SESSION['error_message'])) {
+    echo '<div class=" alert-danger alert-dismissible fade show" role="alert" id="session-alert">
+            ' . $_SESSION['error_message'] . '
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>';
+    unset($_SESSION['error_message']); // Unset after showing
 }
 
 // Fetch data from the database
@@ -88,81 +97,66 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 ?>
             </tbody>
         </table>
-    </div>  
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script>
-    $(document).ready(function () {
+    <script>
+        $(document).ready(function() {
+            // Function to dynamically show alerts
+            function showAlert(message, type) {
+                const alertDiv = $(`
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `);
 
-        // Automatically remove the session alert after 6 seconds if it exists
-        if ($('#session-alert').length) {
-            setTimeout(function () {
-                $('#session-alert').fadeOut(500, function () {
-                    $(this).remove();
-                });
-            }, 2000); // 2000 milliseconds = 2 seconds
-        }
+                // Prepend the alert to the body
+                $('body').prepend(alertDiv);
 
-        // Function to show alerts dynamically
-        function showAlert(message, type) {
-            // Create a new alert div dynamically
-            const alertDiv = $('<div class="alert alert-' + type + ' alert-dismissible fade show" role="alert">' + message +
-                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
-            
-            // Prepend the alert to the body for visibility
-            $('body').prepend(alertDiv);
-
-            // Automatically remove the alert after 6 seconds
-            setTimeout(function () {
-                alertDiv.fadeOut(500, function () {
-                    $(this).remove();
-                });
-            }, 6000); // 6000 milliseconds = 6 seconds
-        }
-
-        // Handle delete button click using event delegation
-        $(document).on('click', '.delete-user-btn', function () {
-            const userId = $(this).data('id');
-            const row = $(this).closest('tr'); // Get the closest row of the clicked button
-
-            // Confirm if the user really wants to delete the user
-            if (confirm('Are you sure you want to delete this user?')) {
-                $.ajax({
-                    url: 'delete.php', // Endpoint to send the request
-                    method: 'POST',
-                    data: { delete_id: userId }, // Send the user ID to delete
-                    dataType: 'json', // Expect a JSON response
-                    success: function (response) {
-                        console.log('Server Response:', response);
-
-                        if (response.success) {
-                            // Show success alert
-                            showAlert(response.message, 'success');
-
-                            // Fade out and remove the row from the table
-                            row.fadeOut(400, function () {
-                                $(this).remove();
-
-                                // Recalculate and update row numbers after deletion
-                                $('tbody tr').each(function (index) {
-                                    $(this).find('th:first').text(index + 1); // Update index (serial number)
-                                });
-                            });
-                        } else {
-                            // Show error alert
-                            showAlert(response.message, 'danger');
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('AJAX Error:', error);
-                        console.error('Response Text:', xhr.responseText);
-
-                        // Show a generic error alert in case of AJAX failure
-                        showAlert('An error occurred while deleting the user.', 'danger');
-                    }
-                });
+                // Auto-remove the alert after 6 seconds
+                setTimeout(() => {
+                    alertDiv.fadeOut(500, () => alertDiv.remove());
+                }, 6000);
             }
-        });
 
-    });
-</script>
+            // Handle delete button click
+            $(document).on('click', '.delete-user-btn', function() {
+                const userId = $(this).data('id'); // Get user ID from button
+                const row = $(this).closest('tr'); // Get the row containing the button
+
+                // Confirm deletion
+                if (confirm('Are you sure you want to delete this user?')) {
+                    $.ajax({
+                        url: 'delete.php', // Backend file for deletion
+                        method: 'POST',
+                        data: {
+                            delete_id: userId
+                        },
+                        dataType: 'json', // Expect JSON response
+                        success: function(response) {
+                            if (response.success) {
+                                // Show success message and remove row
+                                showAlert(response.message, 'success');
+                                row.fadeOut(400, function() {
+                                    $(this).remove();
+
+                                    // Recalculate row numbers
+                                    $('tbody tr').each(function(index) {
+                                        $(this).find('th:first').text(index + 1);
+                                    });
+                                });
+                            } else {
+                                // Show error message
+                                showAlert(response.message, 'danger');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('AJAX Error:', error);
+                            showAlert('An error occurred while deleting the user.', 'danger');
+                        }
+                    });
+                }
+            });
+        });
+    </script>

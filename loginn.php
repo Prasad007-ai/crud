@@ -1,26 +1,53 @@
-<!-- 
-
-session_start();
-include 'connect.php';
+<?php
+// session_start();
+// include 'connect.php';
                                              
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $email = addslashes($_POST['email']);
-    $password = addslashes($_POST['password']);
+// if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+//     $email = addslashes($_POST['email']);
+//     $password = addslashes($_POST['password']);
 
-    // $sql = "SELECT * FROM crud WHERE email='$email' AND password='$password'";
-    $sql="select * from crud where email='$email' AND password ='$password'";
-    $result = mysqli_query($con, $sql);
-    $row = mysqli_fetch_assoc($result);
+//     // $sql = "SELECT * FROM crud WHERE email='$email' AND password='$password'";
+//     $sql="select * from crud where email='$email' AND password ='$password'";
+//     $result = mysqli_query($con, $sql);
+//     $row = mysqli_fetch_assoc($result);
 
-    if ($row) {
-        $_SESSION['loggedin'] = true;
-        $_SESSION['email'] = $row['email'];
+//     if ($row) {
+//         $_SESSION['loggedin'] = true;
+//         $_SESSION['email'] = $row['email'];
 
-        header('Location: display.php');
-    } else {
-        echo "Invalid email or password";
-    }
-} -->
+//         header('Location: display.php');
+//     } else {
+//         echo "Invalid email or password";
+//     }
+// } 
+    ?>
+    <?php 
+//     session_start();
+//  include 'connect.php';
+
+//  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+//      $email = $_POST['email'];
+//      $password = $_POST['password'];
+
+//      // Using a prepared statement to prevent SQL injection
+//      $sql = "SELECT * FROM crud WHERE email = ?";
+//      $stmt = mysqli_prepare($con, $sql);
+//      mysqli_stmt_bind_param($stmt, "s", $email);
+//      mysqli_stmt_execute($stmt);
+//      $result = mysqli_stmt_get_result($stmt);
+//      $row = mysqli_fetch_assoc($result);
+
+//      // Password verification with hashed password
+//      if ($row && password_verify($password, $row['password'])) {
+//          $_SESSION['loggedin'] = true;
+//          $_SESSION['email'] = $row['email'];
+//          header('Location: display.php');
+//          exit(); // Stop further code execution
+//      } else {
+//          echo "Invalid email or password";
+//      }
+//  } 
+ ?>
 <?php
 session_start();
 include 'connect.php';
@@ -85,31 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 
-<!-- // session_start();
- include 'connect.php';
 
- if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-     $email = $_POST['email'];
-     $password = $_POST['password'];
-
-     // Using a prepared statement to prevent SQL injection
-     $sql = "SELECT * FROM crud WHERE email = ?";
-     $stmt = mysqli_prepare($con, $sql);
-     mysqli_stmt_bind_param($stmt, "s", $email);
-     mysqli_stmt_execute($stmt);
-     $result = mysqli_stmt_get_result($stmt);
-     $row = mysqli_fetch_assoc($result);
-
-     // Password verification with hashed password
-     if ($row && password_verify($password, $row['password'])) {
-         $_SESSION['loggedin'] = true;
-         $_SESSION['email'] = $row['email'];
-         header('Location: display.php');
-         exit(); // Stop further code execution
-     } else {
-         echo "Invalid email or password";
-     }
- } -->
 
 
 
@@ -136,6 +139,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
    
         <button type="submit" class="btn-btn-primary signin" name="signin">login</button>
         </form>
+        <div class="mt-3 text-center">
+                    <p>Don't have an account?</p>
+                    <!-- Redirect to user.php -->
+                    <a href="user.php" class="btn btn-secondary">Register</a>
+                </div>
     </div>
 </body>
 </html>

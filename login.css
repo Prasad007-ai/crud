@@ -53,6 +53,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    padding: 20px; /* To handle smaller screens gracefully */
 }
 
 /* Main Form Container */
@@ -74,11 +75,11 @@ body {
 }
 
 /* Title Styling */
-h2 {
-    font-size: 32px;
+h3.ter {
+    font-size: 28px;
     color: #333;
     font-weight: 600;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     letter-spacing: 1px;
 }
 
@@ -116,6 +117,7 @@ h2 {
     border: none;
     cursor: pointer;
     transition: all 0.3s ease;
+    margin-top: 10px;
 }
 
 /* Button Hover Effect */
@@ -130,6 +132,34 @@ h2 {
     transform: translateY(1px);
 }
 
+/* Link to Register */
+.mt-3.text-center {
+    margin-top: 15px;
+}
+
+.mt-3.text-center p {
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+.mt-3.text-center a.btn {
+    text-decoration: none;
+    font-size: 16px;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    background-color: #5c6bc0;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+/* Hover effect for Register button */
+.mt-3.text-center a.btn:hover {
+    background-color: #3f51b5;
+    transform: translateY(-2px);
+}
+
 /* Responsive Design for Mobile Screens */
 @media (max-width: 480px) {
     .container {
@@ -140,7 +170,46 @@ h2 {
         width: 100%;
     }
 
-    h2 {
-        font-size: 28px;
+    h3.ter {
+        font-size: 24px;
     }
+}
+
+
+/* Add this at the bottom of your login.css file */
+#session-alert {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 16px;
+    padding: 10px;
+}
+
+.alert-success {
+    background-color: #4caf50;
+    color: white;
+    border-left: 5px solid #388e3c;
+}
+
+.alert-danger {
+    background-color: #f44336;
+    color: white;
+    border-left: 5px solid #d32f2f;
+}
+
+.btn-close {
+    background-color: white;
+    opacity: 1;
+    box-shadow: none;
+    border-radius: 50%;
+}
+
+.btn-close:hover {
+    background-color: #eee;
+}
+
+.alert {
+    transition: opacity 0.5s ease;
 }
