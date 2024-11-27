@@ -33,6 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo json_encode(['success' => true, 'redirect' => 'display.php']);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Failed to insert user into database.']);
+                
             }
         }
     } catch (Exception $e) {

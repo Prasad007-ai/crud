@@ -1,7 +1,11 @@
 <?php
 session_start();
 include 'connect.php';
-
+// Check if the user is logged in
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    header('Location: loginn.php');
+    exit;
+}
 // Display session message if it exists
 if (isset($_SESSION['success_message'])) {
     echo '<div class=" alert-success alert-dismissible fade show" role="alert" id="session-alert">
@@ -108,15 +112,16 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </table>
     </div>
 </body>
+
 </html>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         // Auto-hide session alerts after 3 seconds
         if ($('#session-alert').length) {
-            setTimeout(function () {
-                $('#session-alert').fadeOut(500, function () {
+            setTimeout(function() {
+                $('#session-alert').fadeOut(500, function() {
                     $(this).remove(); // Remove from DOM after fade out
                 });
             }, 3000); // 3000 milliseconds = 3 seconds
@@ -141,11 +146,11 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         // Handle delete button click
-        $(document).on('click', '.delete-user-btn', function () {
+        $(document).on('click', '.delete-user-btn', function() {
             const userId = $(this).data('id'); // Get user ID from button
             const row = $(this).closest('tr'); // Get the row containing the button
 
-            // Confirm deletion
+            // Confirm deletion 
             if (confirm('Are you sure you want to delete this user?')) {
                 $.ajax({
                     url: 'delete.php', // Backend file for deletion
@@ -154,15 +159,15 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         delete_id: userId
                     },
                     dataType: 'json', // Expect JSON response
-                    success: function (response) {
+                    success: function(response) {
                         if (response.success) {
                             // Show success message and remove row
                             showAlert(response.message, 'success');
-                            row.fadeOut(400, function () {
+                            row.fadeOut(400, function() {
                                 $(this).remove();
 
                                 // Recalculate row numbers
-                                $('tbody tr').each(function (index) {
+                                $('tbody tr').each(function(index) {
                                     $(this).find('th:first').text(index + 1);
                                 });
                             });
@@ -171,7 +176,7 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             showAlert(response.message, 'danger');
                         }
                     },
-                    error: function (xhr, status, error) {
+                    error: function(xhr, status, error) {
                         console.error('AJAX Error:', error);
                         showAlert('An error occurred while deleting the user.', 'danger');
                     }
@@ -181,6 +186,7 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
     });
 </script>
 
-    
+
 </body>
+
 </html>
